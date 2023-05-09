@@ -26,10 +26,8 @@ public class ArticleDto {
     private String description;
 
     @JsonProperty("tags")
-    @NotNull(message = "Поле tags не может быть null")
     private List<TagDto> tags;
 
     @JsonProperty("images")
-    @NotNull(message = "Поле images не может быть null")
     private List<ImageDto> images;
 }

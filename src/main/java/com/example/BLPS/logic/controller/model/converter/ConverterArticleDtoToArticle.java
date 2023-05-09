@@ -1,7 +1,7 @@
 package com.example.BLPS.logic.controller.model.converter;
 
 import com.example.BLPS.logic.controller.model.dto.ArticleDto;
-import com.example.BLPS.entity.Article;
+import com.example.BLPS.model.Article;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 

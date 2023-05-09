@@ -4,9 +4,10 @@ import com.example.BLPS.logic.service.dao.ArticleRepository;
 import com.example.BLPS.logic.service.dao.ImageRepository;
 import com.example.BLPS.logic.service.dao.TagRepository;
 import com.example.BLPS.logic.service.util.ImageUtil;
-import com.example.BLPS.entity.Article;
-import com.example.BLPS.throwable.AssertService;
+import com.example.BLPS.model.Article;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -14,6 +15,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.example.BLPS.throwable.AssertService.*;
 
 @Service
 public class ArticleService {
@@ -30,28 +33,30 @@ public class ArticleService {
     @Autowired
     private ArticleRepository articleRepository;
 
-    public List<Article> getArticle(Map<String, String> requestParam) {
+    private static final Integer DEFAULT_PAGE_SIZE = 10;
+
+    public Page<Article> getArticle(Map<String, String> requestParam) {
         if (requestParam.containsKey("name") && requestParam.containsKey("tags") && requestParam.size() == 2) {
             List<String> tags = Arrays.stream(requestParam.get("tags").split(" ")).collect(Collectors.toList());
 
-            return articleRepository.findAllByTopicIgnoreCaseContainingAndTags_tagNameIn(requestParam.get("name"), tags);
+            return articleRepository.findAllByTopicIgnoreCaseContainingAndTags_tagNameIn(requestParam.get("name"), tags, PageRequest.of(Integer.parseInt(requestParam.get("page")), DEFAULT_PAGE_SIZE));
         }
         if (requestParam.containsKey("name") && requestParam.size() == 1)
-            return articleRepository.findAllByTopicIgnoreCaseContaining(requestParam.get("name"));
+            return articleRepository.findAllByTopicIgnoreCaseContaining(requestParam.get("name"), PageRequest.of(Integer.parseInt(requestParam.get("page")), DEFAULT_PAGE_SIZE));
         if (requestParam.containsKey("tags") && requestParam.size() == 1) {
             List<String> tags = Arrays.stream(requestParam.get("tags").split(" ")).collect(Collectors.toList());
-            return articleRepository.findAllByTags_tagNameIn(tags);
+            return articleRepository.findAllByTags_tagNameIn(tags, PageRequest.of(Integer.parseInt(requestParam.get("page")), DEFAULT_PAGE_SIZE));
         }
-        return articleRepository.findAll();
+        return articleRepository.findAll(PageRequest.of(Integer.parseInt(requestParam.get("page")), DEFAULT_PAGE_SIZE));
     }
 
     public void createNew(Article article) {
-        AssertService.tagsAreNotDuplicated(article.getTags(), article.getTopic());
-        AssertService.existsTopic(articleRepository.existsByTopic(article.getTopic()), article.getTopic());
+        tagsAreNotDuplicated(article.getTags(), article.getTopic());
+        existsTopic(articleRepository.existsByTopic(article.getTopic()), article.getTopic());
 
         article.getImages().forEach(e -> imageUtil.saveImage(e, article.getTopic()));
-
         article.setCreationDate(new Date());
+
         articleRepository.save(article);
         article.getTags().forEach(e -> e.setArticle(article));
         article.getTags().forEach(e -> e.setTagName(e.getTagName().toLowerCase()));

@@ -1,6 +1,8 @@
 package com.example.BLPS.logic.service.dao;
 
-import com.example.BLPS.entity.Article;
+import com.example.BLPS.model.Article;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -9,11 +11,11 @@ public interface ArticleRepository extends CrudRepository<Article, Integer> {
 
     boolean existsByTopic(String topic);
 
-    List<Article> findAll();
+    Page<Article> findAll(Pageable pageable);
 
-    List<Article> findAllByTags_tagNameIn(List<String> tags);
+    Page<Article> findAllByTags_tagNameIn(List<String> tags, Pageable pageable);
 
-    List<Article> findAllByTopicIgnoreCaseContaining(String topic);
+    Page<Article> findAllByTopicIgnoreCaseContaining(String topic, Pageable pageable);
 
-    List<Article> findAllByTopicIgnoreCaseContainingAndTags_tagNameIn(String topic, List<String> tags);
+    Page<Article> findAllByTopicIgnoreCaseContainingAndTags_tagNameIn(String topic, List<String> tags, Pageable pageable);
 }

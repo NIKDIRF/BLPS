@@ -2,7 +2,7 @@ package com.example.BLPS.logic.controller;
 
 import com.example.BLPS.logic.controller.model.dto.ArticleDto;
 import com.example.BLPS.logic.service.ArticleService;
-import com.example.BLPS.entity.Article;
+import com.example.BLPS.model.Article;
 import com.example.BLPS.throwable.AssertController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;

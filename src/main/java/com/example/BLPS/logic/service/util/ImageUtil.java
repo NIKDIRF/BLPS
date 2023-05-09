@@ -1,6 +1,6 @@
 package com.example.BLPS.logic.service.util;
 
-import com.example.BLPS.entity.Image;
+import com.example.BLPS.model.Image;
 import com.example.BLPS.throwable.exception.SaveImageException;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
